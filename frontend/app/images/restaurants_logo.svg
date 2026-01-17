@@ -1,0 +1,26 @@
+<svg viewBox="0 0 240 60" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle for icon -->
+  <circle cx="30" cy="30" r="22" fill="#E74C3C" opacity="0.1"/>
+  
+  <!-- Map pin with fork and knife icon -->
+  <g transform="translate(30, 30)">
+    <!-- Pin shape -->
+    <path d="M 0,-14 Q -8,-14 -8,-6 Q -8,2 0,14 Q 8,2 8,-6 Q 8,-14 0,-14 Z" fill="#E74C3C"/>
+    
+    <!-- Fork centered - solid design -->
+    <g transform="translate(0, -7)">
+      <!-- Fork prongs -->
+      <rect x="-4" y="-4" width="1.2" height="6" fill="white" rx="0.6"/>
+      <rect x="-1.6" y="-4" width="1.2" height="6" fill="white" rx="0.6"/>
+      <rect x="0.6" y="-4" width="1.2" height="6" fill="white" rx="0.6"/>
+      <rect x="3" y="-4" width="1.2" height="6" fill="white" rx="0.6"/>
+      <!-- Fork base/neck -->
+      <ellipse cx="0" cy="1.5" rx="4" ry="2" fill="white"/>
+      <!-- Fork handle -->
+      <rect x="-1" y="2" width="2" height="10" fill="white" rx="1"/>
+    </g>
+  </g>
+  
+  <!-- Text -->
+  <text x="56" y="42" font-family="Arial, sans-serif" font-size="32" font-weight="600" fill="#2C3E50">Restaurants</text>
+</svg>

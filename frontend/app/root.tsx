@@ -12,7 +12,7 @@ import { GlobalQueryClient } from "~/query-client";
 
 import type { Route } from "./+types/root";
 import "./app.css";
-import logoUrl from "./images/contacts_logo.svg";
+import logoUrl from "./images/restaurants_logo.svg";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -31,8 +31,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <header className="sticky top-0 z-50 bg-white border-b">
           <div className="container mx-auto h-16 flex items-center justify-between px-4">
             <Link to="/" className="flex items-center gap-2">
-              <img src={logoUrl} alt="Contacts" className="h-10 w-auto" />
-              <span className="sr-only">Contacts</span>
+              <img src={logoUrl} alt="Restaurants" className="h-10 w-auto" />
+              <span className="sr-only">Restaurants</span>
             </Link>
             <nav className="flex items-center gap-6 text-sm">
               <Link to="/" className="hover:underline">
@@ -40,12 +40,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
               </Link>
               <Link to="/map" className="hover:underline">
                 Map
-              </Link>
-              <Link to="/contact-list" className="hover:underline">
-                Contact List
-              </Link>
-              <Link to="/contact-us" className="hover:underline">
-                Contact Us
               </Link>
               <Link to="/add-restaurant" className="hover:underline">
                 Add Restaurant
@@ -64,7 +58,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             </div>
             <div className="flex items-center gap-4">
               <a href="contacts@example.com" className="hover:underline">
-                contacts@example.com
+                restaurants@example.com
               </a>
               <a href="tel:132434" className="hover:underline">
                 1300 345 678

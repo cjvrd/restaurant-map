@@ -10,18 +10,6 @@ export const status = {
     DELETED: "DELETED"
 } as const;
 export type status = (typeof status)[keyof typeof status];
-export type Contact = {
-    id: Generated<number>;
-    created_time: Generated<Timestamp>;
-    updated_time: Timestamp;
-    status: Generated<status>;
-    first_name: string;
-    last_name: string;
-    email: string;
-    phone: string;
-    notes: string | null;
-    verified: Generated<boolean>;
-};
 export type Restaurant = {
     id: Generated<number>;
     created_time: Generated<Timestamp>;
@@ -34,6 +22,5 @@ export type Restaurant = {
     description: string | null;
 };
 export type DB = {
-    Contact: Contact;
     Restaurant: Restaurant;
 };
