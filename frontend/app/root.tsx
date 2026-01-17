@@ -22,6 +22,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+        <link
+          href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css"
+          rel="stylesheet"
+        />
       </head>
       <body className="min-h-screen flex flex-col">
         <header className="sticky top-0 z-50 bg-white border-b">
@@ -34,11 +38,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <Link to="/" className="hover:underline">
                 Home
               </Link>
+              <Link to="/map" className="hover:underline">
+                Map
+              </Link>
               <Link to="/contact-list" className="hover:underline">
                 Contact List
               </Link>
               <Link to="/contact-us" className="hover:underline">
                 Contact Us
+              </Link>
+              <Link to="/add-restaurant" className="hover:underline">
+                Add Restaurant
               </Link>
             </nav>
           </div>

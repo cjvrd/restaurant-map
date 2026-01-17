@@ -22,6 +22,18 @@ model Contact {
     verified     Boolean  @default(false)
 }
 
+model Restaurant {
+    id           Int      @id @default(autoincrement())
+    created_time DateTime @default(now())
+    updated_time DateTime @updatedAt
+    status       status   @default(ENABLED)
+    name         String
+    address      String?
+    phone        String?
+    website      String?
+    description  String?
+}
+
 enum status {
     ENABLED
     DISABLED

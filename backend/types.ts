@@ -22,6 +22,18 @@ export type Contact = {
     notes: string | null;
     verified: Generated<boolean>;
 };
+export type Restaurant = {
+    id: Generated<number>;
+    created_time: Generated<Timestamp>;
+    updated_time: Timestamp;
+    status: Generated<status>;
+    name: string;
+    address: string | null;
+    phone: string | null;
+    website: string | null;
+    description: string | null;
+};
 export type DB = {
     Contact: Contact;
+    Restaurant: Restaurant;
 };

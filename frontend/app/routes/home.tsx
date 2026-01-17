@@ -1,10 +1,8 @@
-import type { Route } from "./+types/contact-list";
-
 export function loader() {
   return { name: "Contact List" };
 }
 
-export default function ContactList({}: Route.ComponentProps) {
+export default function Home() {
   return (
     <div className="text-center p-4">
       <h1 className="text-2xl">Hello!</h1>
