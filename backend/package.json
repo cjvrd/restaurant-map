@@ -1,7 +1,7 @@
 {
-  "name": "project-template",
+  "name": "restaurant-map",
   "version": "1.0.0",
-  "description": "A simple contact app project",
+  "description": "A Map of Restaurants",
   "main": "server.js",
   "scripts": {
     "start": "tsx watch ./server.ts",

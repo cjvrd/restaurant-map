@@ -1,11 +1,3 @@
-# Template Contact App
-
-A simple full‑stack example app for collecting and managing contact requests.
-
-- Frontend: React, React Router, Tanstack Query, Tailwind
-- Backend: Node.js, Express, Kysely
-- Database: Postgres via Prisma schema (Kysely types generated with prisma‑kysely)
-
 ## Quick start with Docker
 
 Prerequisites:
@@ -41,12 +33,3 @@ Then open:
 - Frontend: http://localhost:5173
 - Backend API: http://localhost:3000
 - Postgres: localhost:5432 (user: postgres, password: postgres, db: postgres)
-
-## API
-
-Base URL: `http://localhost:3000`
-
-- GET `/contacts` — list all contacts
-- POST `/contacts` — create a new contact
-- DELETE `/contacts/:id` — soft delete contact (status=DELETED)
-- PATCH `/contacts/:id` — verify contact (verified=true)
