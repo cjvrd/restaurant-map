@@ -45,24 +45,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </header>
 
-        <main className="container mx-auto px-4 py-6 flex-1">{children}</main>
-
-        <footer className="border-t">
-          <div className="container mx-auto px-4 py-6 text-sm text-gray-500 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <img src={logoUrl} alt="Restaurants" className="h-7 w-auto" />
-              <span>&copy; {new Date().getFullYear()}</span>
-            </div>
-            <div className="flex items-center gap-4">
-              <a href="restaurants@example.com" className="hover:underline">
-                restaurants@example.com
-              </a>
-              <a href="tel:132434" className="hover:underline">
-                1300 345 678
-              </a>
-            </div>
-          </div>
-        </footer>
+        <main className="flex-1">{children}</main>
         <ScrollRestoration />
         <Scripts />
       </body>

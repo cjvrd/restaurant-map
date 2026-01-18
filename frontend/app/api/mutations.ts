@@ -3,12 +3,16 @@ import { GlobalQueryClient } from "~/query-client";
 import type { Restaurant } from "./queries";
 import { API_URL } from "./constants";
 
-type NewRestaurant = Omit<Restaurant, "id" | "created_time" | "updated_time">;
+type NewRestaurant = Omit<
+  Restaurant,
+  "id" | "created_time" | "updated_time" | "status"
+>;
 
 const RestaurantMutations = {
   addRestaurant: () => {
     return mutationOptions({
       mutationFn: async (restaurant: NewRestaurant) => {
+        console.log("Adding restaurant:", restaurant);
         const response = await fetch(`${API_URL}/restaurants`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },

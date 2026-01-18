@@ -16,6 +16,7 @@ model Restaurant {
     status       status   @default(ENABLED)
     name         String
     address      String?
+    coordinates  Json? // { lng: 0.0, lat: 0.0 }
     phone        String?
     website      String?
     description  String?

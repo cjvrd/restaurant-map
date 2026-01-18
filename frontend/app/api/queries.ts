@@ -8,6 +8,7 @@ export type Restaurant = {
   status: "ENABLED" | "DISABLED" | "DELETED";
   name: string;
   address: string | null;
+  coordinates: { lng: number; lat: number } | null;
   phone: string | null;
   website: string | null;
   description: string | null;

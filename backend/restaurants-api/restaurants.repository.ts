@@ -15,6 +15,7 @@ export const RestaurantsRepository = {
       .values({
         name: restaurant.name,
         address: restaurant.address,
+        coordinates: restaurant.coordinates,
         phone: restaurant.phone,
         website: restaurant.website,
         description: restaurant.description,

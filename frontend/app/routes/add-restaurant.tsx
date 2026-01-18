@@ -12,6 +12,10 @@ import {
 } from "~/components/ui/form";
 import { useAddRestaurant } from "~/api/mutations";
 import { useForm } from "react-hook-form";
+import { parsePhoneNumberWithError } from "libphonenumber-js";
+import { AddressAutofill } from "@mapbox/search-js-react";
+import { accessToken } from "./map";
+import { useState } from "react";
 
 type FormValues = {
   name: string;
@@ -23,6 +27,11 @@ type FormValues = {
 
 export default function AddRestaurant() {
   const addRestaurantMutation = useAddRestaurant();
+  const [coordinates, setCoordinates] = useState<{
+    lng: number;
+    lat: number;
+  } | null>(null);
+  console.log("coordinates", coordinates);
 
   const form = useForm<FormValues>({
     mode: "onTouched",
@@ -40,14 +49,14 @@ export default function AddRestaurant() {
       {
         name: values.name,
         address: values.address ?? null,
+        coordinates: coordinates ?? null,
         phone: values.phone ?? null,
         website: values.website ?? null,
         description: values.description ?? null,
-        status: "ENABLED",
       },
       {
         onSuccess: () => form.reset(),
-      }
+      },
     );
   };
 
@@ -93,7 +102,6 @@ export default function AddRestaurant() {
                       <FormLabel className="p-1">Restaurant Name *</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Restaurant name"
                           disabled={addRestaurantMutation.isPending}
                           {...field}
                           maxLength={100}
@@ -114,12 +122,23 @@ export default function AddRestaurant() {
                     <FormItem>
                       <FormLabel className="p-1">Address</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="123 Main St, City, State 12345"
-                          disabled={addRestaurantMutation.isPending}
-                          {...field}
-                          maxLength={200}
-                        />
+                        <AddressAutofill
+                          accessToken={accessToken}
+                          onRetrieve={(response) => {
+                            const coords =
+                              response.features?.[0]?.geometry?.coordinates;
+                            setCoordinates({
+                              lng: coords[0],
+                              lat: coords[1],
+                            });
+                          }}
+                        >
+                          <Input
+                            disabled={addRestaurantMutation.isPending}
+                            {...field}
+                            maxLength={200}
+                          />
+                        </AddressAutofill>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -131,9 +150,20 @@ export default function AddRestaurant() {
                   name="phone"
                   rules={{
                     maxLength: { value: 20, message: "Max 20 characters" },
-                    pattern: {
-                      value: /^[0-9\s\-\+\(\)]*$/,
-                      message: "Invalid phone number format",
+                    validate: (value) => {
+                      if (!value) return true;
+                      try {
+                        const phoneNumber = parsePhoneNumberWithError(
+                          value,
+                          "AU",
+                        );
+                        if (!phoneNumber.isValid()) {
+                          return "Invalid phone number";
+                        }
+                        return true;
+                      } catch (error) {
+                        return "Invalid phone number";
+                      }
                     },
                   }}
                   render={({ field }) => (
@@ -141,7 +171,6 @@ export default function AddRestaurant() {
                       <FormLabel className="p-1">Phone</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="(123) 456-7890"
                           disabled={addRestaurantMutation.isPending}
                           {...field}
                           maxLength={20}
@@ -168,7 +197,6 @@ export default function AddRestaurant() {
                       <FormLabel className="p-1">Website</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="https://www.example.com"
                           disabled={addRestaurantMutation.isPending}
                           {...field}
                           maxLength={200}
@@ -190,7 +218,6 @@ export default function AddRestaurant() {
                       <FormLabel className="p-1">Description</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Tell us about this restaurant..."
                           disabled={addRestaurantMutation.isPending}
                           {...field}
                           maxLength={500}
