@@ -44,9 +44,28 @@ const RestaurantMutations = {
       },
     });
   },
+  updateRating: () => {
+    return mutationOptions({
+      mutationFn: async ({ id, rating }: { id: number; rating: number }) => {
+        const response = await fetch(`${API_URL}/restaurants/${id}/rating`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ rating }),
+        });
+        if (response.status !== 200)
+          throw new Error("Failed to update rating");
+        return response.json();
+      },
+      onSuccess: () => {
+        GlobalQueryClient.invalidateQueries({ queryKey: ["restaurants"] });
+      },
+    });
+  },
 };
 
 export const useAddRestaurant = () =>
   useMutation(RestaurantMutations.addRestaurant());
 export const useDeleteRestaurant = () =>
   useMutation(RestaurantMutations.deleteRestaurant());
+export const useUpdateRating = () =>
+  useMutation(RestaurantMutations.updateRating());

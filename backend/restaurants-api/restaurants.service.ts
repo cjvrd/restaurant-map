@@ -9,4 +9,7 @@ export const RestaurantsService = {
 
   deleteRestaurant: async (id: string) =>
     RestaurantsRepository.deleteRestaurant(id),
+
+  updateRating: async (id: number, rating: number) =>
+    RestaurantsRepository.updateRestaurantRating(id, rating),
 };

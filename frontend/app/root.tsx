@@ -38,6 +38,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <Link to="/" className="hover:underline">
                 Map
               </Link>
+              <Link to="/restaurants" className="hover:underline">
+                Restaurants
+              </Link>
               <Link to="/add-restaurant" className="hover:underline">
                 Add Restaurant
               </Link>

@@ -12,4 +12,7 @@ restaurantsRouter.post("/", RestaurantsController.addRestaurant);
 //Delete Restaurant
 restaurantsRouter.delete("/:id", RestaurantsController.deleteRestaurant);
 
+//Update Rating
+restaurantsRouter.patch("/:id/rating", RestaurantsController.updateRating);
+
 export default restaurantsRouter;

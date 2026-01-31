@@ -53,6 +53,7 @@ export default function AddRestaurant() {
         phone: values.phone ?? null,
         website: values.website ?? null,
         description: values.description ?? null,
+        rating: null,
       },
       {
         onSuccess: () => form.reset(),

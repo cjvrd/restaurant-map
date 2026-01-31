@@ -54,4 +54,15 @@ export const RestaurantsController = {
       res.status(500).json({ error: "Failed to delete restaurant" });
     }
   },
+
+  updateRating: async (req: Request, res: Response) => {
+    try {
+      const result = await RestaurantsService.updateRating(Number(req.params.id), req.body.rating);
+      if (!result)
+        return res.status(404).json({ error: "Restaurant not found" });
+      res.status(200).json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update rating" });
+    }
+  },
 };
