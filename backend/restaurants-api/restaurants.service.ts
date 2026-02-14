@@ -12,4 +12,7 @@ export const RestaurantsService = {
 
   updateRating: async (id: number, rating: number) =>
     RestaurantsRepository.updateRestaurantRating(id, rating),
+
+  updateReview: async (id: number, review: string | null) =>
+    RestaurantsRepository.updateRestaurantReview(id, review),
 };

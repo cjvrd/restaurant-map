@@ -53,6 +53,7 @@ export function AddRestaurantForm({ onSuccess }: { onSuccess?: () => void } = {}
         website: values.website ?? null,
         description: values.description ?? null,
         rating: null,
+        review: null,
       },
       {
         onSuccess: () => {

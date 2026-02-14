@@ -15,4 +15,7 @@ restaurantsRouter.delete("/:id", RestaurantsController.deleteRestaurant);
 //Update Rating
 restaurantsRouter.patch("/:id/rating", RestaurantsController.updateRating);
 
+//Update Review
+restaurantsRouter.patch("/:id/review", RestaurantsController.updateReview);
+
 export default restaurantsRouter;

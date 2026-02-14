@@ -18,6 +18,10 @@ const zRestaurantReq = z.object({
 
 export type RestaurantReq = z.infer<typeof zRestaurantReq>;
 
+const zReviewReq = z.object({
+  review: z.string().max(2000).nullable(),
+});
+
 export const RestaurantsController = {
   getRestaurants: async (req: Request, res: Response) => {
     try {
@@ -63,6 +67,24 @@ export const RestaurantsController = {
       res.status(200).json(result);
     } catch (error) {
       res.status(500).json({ error: "Failed to update rating" });
+    }
+  },
+
+  updateReview: async (req: Request, res: Response) => {
+    try {
+      const parsed = zReviewReq.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ error: "Invalid request body" });
+      }
+      const result = await RestaurantsService.updateReview(
+        Number(req.params.id),
+        parsed.data.review,
+      );
+      if (!result)
+        return res.status(404).json({ error: "Restaurant not found" });
+      res.status(200).json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update review" });
     }
   },
 };

@@ -61,6 +61,29 @@ const RestaurantMutations = {
       },
     });
   },
+  updateReview: () => {
+    return mutationOptions({
+      mutationFn: async ({
+        id,
+        review,
+      }: {
+        id: number;
+        review: string | null;
+      }) => {
+        const response = await fetch(`${API_URL}/restaurants/${id}/review`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ review }),
+        });
+        if (response.status !== 200)
+          throw new Error("Failed to update review");
+        return response.json();
+      },
+      onSuccess: () => {
+        GlobalQueryClient.invalidateQueries({ queryKey: ["restaurants"] });
+      },
+    });
+  },
 };
 
 export const useAddRestaurant = () =>
@@ -69,3 +92,5 @@ export const useDeleteRestaurant = () =>
   useMutation(RestaurantMutations.deleteRestaurant());
 export const useUpdateRating = () =>
   useMutation(RestaurantMutations.updateRating());
+export const useUpdateReview = () =>
+  useMutation(RestaurantMutations.updateReview());

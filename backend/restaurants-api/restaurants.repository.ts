@@ -40,4 +40,13 @@ export const RestaurantsRepository = {
       .where("status", "=", "ENABLED")
       .returningAll()
       .executeTakeFirst(),
+
+  updateRestaurantReview: async (id: number, review: string | null) =>
+    db
+      .updateTable("Restaurant")
+      .set({ review, updated_time: new Date() })
+      .where("id", "=", id)
+      .where("status", "=", "ENABLED")
+      .returningAll()
+      .executeTakeFirst(),
 };

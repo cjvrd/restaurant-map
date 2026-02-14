@@ -21,6 +21,7 @@ model Restaurant {
     website      String?
     description  String?
     rating       Int? // 1-5 stars
+    review       String?
 }
 
 enum status {

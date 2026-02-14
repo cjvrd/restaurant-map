@@ -13,6 +13,7 @@ export type Restaurant = {
   website: string | null;
   description: string | null;
   rating: number | null;
+  review: string | null;
 };
 
 const RestaurantQueries = {
