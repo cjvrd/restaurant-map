@@ -6,7 +6,6 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
-import { Link } from "react-router";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { GlobalQueryClient } from "~/query-client";
 
@@ -29,22 +28,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body className="min-h-screen flex flex-col">
         <header className="sticky top-0 z-50 bg-white border-b">
-          <div className="container mx-auto h-16 flex items-center justify-between px-4">
-            <Link to="/" className="flex items-center gap-2">
-              <img src={logoUrl} alt="Restaurants" className="h-10 w-auto" />
-              <span className="sr-only">Restaurants</span>
-            </Link>
-            <nav className="flex items-center gap-6 text-sm">
-              <Link to="/" className="hover:underline">
-                Map
-              </Link>
-              <Link to="/restaurants" className="hover:underline">
-                Restaurants
-              </Link>
-              <Link to="/add-restaurant" className="hover:underline">
-                Add Restaurant
-              </Link>
-            </nav>
+          <div className="h-16 flex items-center px-4">
+            <img src={logoUrl} alt="Restaurantier" className="h-10 w-auto" />
           </div>
         </header>
 

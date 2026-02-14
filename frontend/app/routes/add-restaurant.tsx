@@ -25,13 +25,12 @@ type FormValues = {
   description?: string;
 };
 
-export default function AddRestaurant() {
+export function AddRestaurantForm({ onSuccess }: { onSuccess?: () => void } = {}) {
   const addRestaurantMutation = useAddRestaurant();
   const [coordinates, setCoordinates] = useState<{
     lng: number;
     lat: number;
   } | null>(null);
-  console.log("coordinates", coordinates);
 
   const form = useForm<FormValues>({
     mode: "onTouched",
@@ -56,18 +55,19 @@ export default function AddRestaurant() {
         rating: null,
       },
       {
-        onSuccess: () => form.reset(),
+        onSuccess: () => {
+          form.reset();
+          setCoordinates(null);
+          onSuccess?.();
+        },
       },
     );
   };
 
   return (
     <div className="flex flex-col items-center">
-      <h1 className="text-3xl font-medium text-center mt-4 mb-2">
-        Add a New Restaurant
-      </h1>
-      <div className="max-w-5xl w-full mx-auto mt-8">
-        <div className="p-4 border rounded">
+      <div className="max-w-5xl w-full mx-auto">
+        <div>
           {addRestaurantMutation.isSuccess ? (
             <div className="space-y-4" role="status" aria-live="polite">
               <h2 className="text-2xl font-semibold text-center">
@@ -266,6 +266,19 @@ export default function AddRestaurant() {
             </Form>
           )}
         </div>
+      </div>
+    </div>
+  );
+}
+
+export default function AddRestaurant() {
+  return (
+    <div>
+      <h1 className="text-3xl font-medium text-center mt-4 mb-2">
+        Add a New Restaurant
+      </h1>
+      <div className="p-4 border rounded">
+        <AddRestaurantForm />
       </div>
     </div>
   );
