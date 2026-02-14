@@ -18,4 +18,7 @@ restaurantsRouter.patch("/:id/rating", RestaurantsController.updateRating);
 //Update Review
 restaurantsRouter.patch("/:id/review", RestaurantsController.updateReview);
 
+//Update Restaurant
+restaurantsRouter.patch("/:id", RestaurantsController.updateRestaurant);
+
 export default restaurantsRouter;

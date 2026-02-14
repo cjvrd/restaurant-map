@@ -8,6 +8,10 @@ type NewRestaurant = Omit<
   "id" | "created_time" | "updated_time" | "status"
 >;
 
+type RestaurantUpdate = Partial<
+  Pick<Restaurant, "name" | "address" | "coordinates" | "phone" | "website" | "description">
+>;
+
 const RestaurantMutations = {
   addRestaurant: () => {
     return mutationOptions({
@@ -84,6 +88,26 @@ const RestaurantMutations = {
       },
     });
   },
+  updateRestaurant: () => {
+    return mutationOptions({
+      mutationFn: async ({
+        id,
+        ...data
+      }: { id: number } & RestaurantUpdate) => {
+        const response = await fetch(`${API_URL}/restaurants/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        if (response.status !== 200)
+          throw new Error("Failed to update restaurant");
+        return response.json();
+      },
+      onSuccess: () => {
+        GlobalQueryClient.invalidateQueries({ queryKey: ["restaurants"] });
+      },
+    });
+  },
 };
 
 export const useAddRestaurant = () =>
@@ -94,3 +118,5 @@ export const useUpdateRating = () =>
   useMutation(RestaurantMutations.updateRating());
 export const useUpdateReview = () =>
   useMutation(RestaurantMutations.updateReview());
+export const useUpdateRestaurant = () =>
+  useMutation(RestaurantMutations.updateRestaurant());

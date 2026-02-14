@@ -10,6 +10,7 @@ import {
   FormControl,
   FormMessage,
 } from "~/components/ui/form";
+import { StarRating } from "~/components/ui/star-rating";
 import { useAddRestaurant } from "~/api/mutations";
 import { useForm } from "react-hook-form";
 import { parsePhoneNumberWithError } from "libphonenumber-js";
@@ -25,12 +26,22 @@ type FormValues = {
   description?: string;
 };
 
-export function AddRestaurantForm({ onSuccess }: { onSuccess?: () => void } = {}) {
+type AddRestaurantFormProps = {
+  onSuccess?: () => void;
+  includeReview?: boolean;
+};
+
+export function AddRestaurantForm({
+  onSuccess,
+  includeReview,
+}: AddRestaurantFormProps = {}) {
   const addRestaurantMutation = useAddRestaurant();
   const [coordinates, setCoordinates] = useState<{
     lng: number;
     lat: number;
   } | null>(null);
+  const [rating, setRating] = useState(0);
+  const [reviewText, setReviewText] = useState("");
 
   const form = useForm<FormValues>({
     mode: "onTouched",
@@ -52,13 +63,15 @@ export function AddRestaurantForm({ onSuccess }: { onSuccess?: () => void } = {}
         phone: values.phone ?? null,
         website: values.website ?? null,
         description: values.description ?? null,
-        rating: null,
-        review: null,
+        rating: includeReview && rating > 0 ? rating : null,
+        review: includeReview && reviewText.trim() ? reviewText.trim() : null,
       },
       {
         onSuccess: () => {
           form.reset();
           setCoordinates(null);
+          setRating(0);
+          setReviewText("");
           onSuccess?.();
         },
       },
@@ -231,15 +244,34 @@ export function AddRestaurantForm({ onSuccess }: { onSuccess?: () => void } = {}
                   )}
                 />
 
+                {includeReview && (
+                  <>
+                    <div>
+                      <label className="text-sm font-medium p-1">Rating</label>
+                      <div className="mt-1">
+                        <StarRating
+                          value={rating}
+                          onChange={setRating}
+                          size="md"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium p-1">Review</label>
+                      <Textarea
+                        className="mt-1"
+                        value={reviewText}
+                        onChange={(e) => setReviewText(e.target.value)}
+                        maxLength={2000}
+                        rows={4}
+                        placeholder="How was it?"
+                        disabled={addRestaurantMutation.isPending}
+                      />
+                    </div>
+                  </>
+                )}
+
                 <div className="flex justify-end gap-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => form.reset()}
-                    disabled={addRestaurantMutation.isPending}
-                  >
-                    Reset
-                  </Button>
                   <Button
                     type="submit"
                     disabled={addRestaurantMutation.isPending}

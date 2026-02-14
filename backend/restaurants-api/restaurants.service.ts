@@ -15,4 +15,7 @@ export const RestaurantsService = {
 
   updateReview: async (id: number, review: string | null) =>
     RestaurantsRepository.updateRestaurantReview(id, review),
+
+  updateRestaurant: async (id: number, data: Partial<RestaurantReq>) =>
+    RestaurantsRepository.updateRestaurant(id, data),
 };
