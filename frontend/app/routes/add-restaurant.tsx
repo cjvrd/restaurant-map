@@ -11,12 +11,19 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 import { StarRating } from "~/components/ui/star-rating";
-import { useAddRestaurant } from "~/api/mutations";
+import {
+  useAddRestaurant,
+  useUpdateRestaurant,
+  useUpdateRating,
+  useUpdateReview,
+} from "~/api/mutations";
+import type { Restaurant } from "~/api/queries";
 import { useForm } from "react-hook-form";
 import { parsePhoneNumberWithError } from "libphonenumber-js";
 import { AddressAutofill } from "@mapbox/search-js-react";
 import { accessToken } from "./map";
 import { useState } from "react";
+import { Trash2 } from "lucide-react";
 
 type FormValues = {
   name: string;
@@ -26,63 +33,116 @@ type FormValues = {
   description?: string;
 };
 
-type AddRestaurantFormProps = {
-  onSuccess?: () => void;
+type RestaurantFormProps = {
+  restaurant?: Restaurant;
   includeReview?: boolean;
+  onSuccess?: () => void;
+  onDelete?: () => void;
 };
 
-export function AddRestaurantForm({
-  onSuccess,
+export function RestaurantForm({
+  restaurant,
   includeReview,
-}: AddRestaurantFormProps = {}) {
+  onSuccess,
+  onDelete,
+}: RestaurantFormProps) {
+  const isEdit = !!restaurant;
+
   const addRestaurantMutation = useAddRestaurant();
+  const updateRestaurantMutation = useUpdateRestaurant();
+  const updateRatingMutation = useUpdateRating();
+  const updateReviewMutation = useUpdateReview();
+
   const [coordinates, setCoordinates] = useState<{
     lng: number;
     lat: number;
-  } | null>(null);
-  const [rating, setRating] = useState(0);
-  const [reviewText, setReviewText] = useState("");
+  } | null>(restaurant?.coordinates ?? null);
+  const [rating, setRating] = useState(restaurant?.rating ?? 0);
+  const [reviewText, setReviewText] = useState(restaurant?.review ?? "");
 
   const form = useForm<FormValues>({
     mode: "onTouched",
     defaultValues: {
-      name: "",
-      address: "",
-      phone: "",
-      website: "",
-      description: "",
+      name: restaurant?.name ?? "",
+      address: restaurant?.address ?? "",
+      phone: restaurant?.phone ?? "",
+      website: restaurant?.website ?? "",
+      description: restaurant?.description ?? "",
     },
   });
 
+  const isPending =
+    addRestaurantMutation.isPending ||
+    updateRestaurantMutation.isPending ||
+    updateRatingMutation.isPending ||
+    updateReviewMutation.isPending;
+
   const onSubmit = (values: FormValues) => {
-    addRestaurantMutation.mutate(
-      {
-        name: values.name,
-        address: values.address ?? null,
-        coordinates: coordinates ?? null,
-        phone: values.phone ?? null,
-        website: values.website ?? null,
-        description: values.description ?? null,
-        rating: includeReview && rating > 0 ? rating : null,
-        review: includeReview && reviewText.trim() ? reviewText.trim() : null,
-      },
-      {
-        onSuccess: () => {
-          form.reset();
-          setCoordinates(null);
-          setRating(0);
-          setReviewText("");
-          onSuccess?.();
+    if (isEdit) {
+      updateRestaurantMutation.mutate(
+        {
+          id: restaurant.id,
+          name: values.name,
+          address: values.address || null,
+          coordinates: coordinates ?? undefined,
+          phone: values.phone || null,
+          website: values.website || null,
+          description: values.description || null,
         },
-      },
-    );
+        {
+          onSuccess: () => {
+            if (includeReview && rating > 0) {
+              updateRatingMutation.mutate(
+                { id: restaurant.id, rating },
+                {
+                  onSuccess: () => {
+                    const review = reviewText.trim() || null;
+                    updateReviewMutation.mutate(
+                      { id: restaurant.id, review },
+                      { onSuccess: () => onSuccess?.() },
+                    );
+                  },
+                },
+              );
+            } else {
+              onSuccess?.();
+            }
+          },
+        },
+      );
+    } else {
+      addRestaurantMutation.mutate(
+        {
+          name: values.name,
+          address: values.address ?? null,
+          coordinates: coordinates ?? null,
+          phone: values.phone ?? null,
+          website: values.website ?? null,
+          description: values.description ?? null,
+          rating: includeReview && rating > 0 ? rating : null,
+          review: includeReview && reviewText.trim() ? reviewText.trim() : null,
+        },
+        {
+          onSuccess: () => {
+            form.reset();
+            setCoordinates(null);
+            setRating(0);
+            setReviewText("");
+            onSuccess?.();
+          },
+        },
+      );
+    }
   };
+
+  const isError =
+    addRestaurantMutation.isError || updateRestaurantMutation.isError;
 
   return (
     <div className="flex flex-col items-center">
       <div className="max-w-5xl w-full mx-auto">
         <div>
-          {addRestaurantMutation.isSuccess ? (
+          {!isEdit && addRestaurantMutation.isSuccess ? (
             <div className="space-y-4" role="status" aria-live="polite">
               <h2 className="text-2xl font-semibold text-center">
                 Restaurant added successfully!
@@ -117,7 +177,7 @@ export function AddRestaurantForm({
                       <FormLabel className="p-1">Restaurant Name *</FormLabel>
                       <FormControl>
                         <Input
-                          disabled={addRestaurantMutation.isPending}
+                          disabled={isPending}
                           {...field}
                           maxLength={100}
                         />
@@ -140,16 +200,18 @@ export function AddRestaurantForm({
                         <AddressAutofill
                           accessToken={accessToken}
                           onRetrieve={(response) => {
-                            const coords =
-                              response.features?.[0]?.geometry?.coordinates;
-                            setCoordinates({
-                              lng: coords[0],
-                              lat: coords[1],
-                            });
+                            const feature = response.features?.[0];
+                            const coords = feature?.geometry?.coordinates;
+                            if (coords) {
+                              setCoordinates({
+                                lng: coords[0],
+                                lat: coords[1],
+                              });
+                            }
                           }}
                         >
                           <Input
-                            disabled={addRestaurantMutation.isPending}
+                            disabled={isPending}
                             {...field}
                             maxLength={200}
                           />
@@ -185,11 +247,7 @@ export function AddRestaurantForm({
                     <FormItem>
                       <FormLabel className="p-1">Phone</FormLabel>
                       <FormControl>
-                        <Input
-                          disabled={addRestaurantMutation.isPending}
-                          {...field}
-                          maxLength={20}
-                        />
+                        <Input disabled={isPending} {...field} maxLength={20} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -212,7 +270,7 @@ export function AddRestaurantForm({
                       <FormLabel className="p-1">Website</FormLabel>
                       <FormControl>
                         <Input
-                          disabled={addRestaurantMutation.isPending}
+                          disabled={isPending}
                           {...field}
                           maxLength={200}
                         />
@@ -233,7 +291,7 @@ export function AddRestaurantForm({
                       <FormLabel className="p-1">Description</FormLabel>
                       <FormControl>
                         <Textarea
-                          disabled={addRestaurantMutation.isPending}
+                          disabled={isPending}
                           {...field}
                           maxLength={500}
                           rows={4}
@@ -265,34 +323,46 @@ export function AddRestaurantForm({
                         maxLength={2000}
                         rows={4}
                         placeholder="How was it?"
-                        disabled={addRestaurantMutation.isPending}
+                        disabled={isPending}
                       />
                     </div>
                   </>
                 )}
 
-                <div className="flex justify-end gap-2">
-                  <Button
-                    type="submit"
-                    disabled={addRestaurantMutation.isPending}
-                  >
-                    {addRestaurantMutation.isPending ? (
+                <div className="flex justify-between gap-2">
+                  {onDelete ? (
+                    <Button
+                      type="button"
+                      onClick={onDelete}
+                      disabled={isPending}
+                    >
+                      <Trash2 />
+                    </Button>
+                  ) : (
+                    <div />
+                  )}
+                  <Button type="submit" disabled={isPending}>
+                    {isPending ? (
                       <>
                         <Spinner className="mr-2" />
-                        Adding...
+                        {isEdit ? "Saving..." : "Adding..."}
                       </>
+                    ) : isEdit ? (
+                      "Save"
                     ) : (
                       "Add Restaurant"
                     )}
                   </Button>
                 </div>
 
-                {addRestaurantMutation.isError && (
+                {isError && (
                   <div
                     className="text-red-600 text-center p-2 border border-red-300 rounded bg-red-50"
                     role="alert"
                   >
-                    Failed to add restaurant. Please try again.
+                    {isEdit
+                      ? "Failed to update restaurant. Please try again."
+                      : "Failed to add restaurant. Please try again."}
                   </div>
                 )}
               </form>
@@ -304,6 +374,8 @@ export function AddRestaurantForm({
   );
 }
 
+export const AddRestaurantForm = RestaurantForm;
+
 export default function AddRestaurant() {
   return (
     <div>
@@ -311,7 +383,7 @@ export default function AddRestaurant() {
         Add a New Restaurant
       </h1>
       <div className="p-4 border rounded">
-        <AddRestaurantForm />
+        <RestaurantForm />
       </div>
     </div>
   );

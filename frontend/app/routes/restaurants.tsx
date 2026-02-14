@@ -1,14 +1,8 @@
 import { useState } from "react";
 import { useGetAllRestaurants, type Restaurant } from "~/api/queries";
-import {
-  useDeleteRestaurant,
-  useUpdateRating,
-  useUpdateReview,
-  useUpdateRestaurant,
-} from "~/api/mutations";
+import { useDeleteRestaurant, useUpdateRating, useUpdateReview } from "~/api/mutations";
 import { StarRating } from "~/components/ui/star-rating";
 import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import {
   Dialog,
@@ -24,9 +18,8 @@ import {
   Plus,
   Star,
   UtensilsCrossed,
-  Trash2,
 } from "lucide-react";
-import { AddRestaurantForm } from "~/routes/add-restaurant";
+import { RestaurantForm } from "~/routes/add-restaurant";
 
 function RedStars({
   rating,
@@ -140,51 +133,7 @@ function EditRestaurantDialog({
   onOpenChange: (open: boolean) => void;
   isVisited: boolean;
 }) {
-  const [name, setName] = useState(restaurant.name);
-  const [address, setAddress] = useState(restaurant.address ?? "");
-  const [phone, setPhone] = useState(restaurant.phone ?? "");
-  const [website, setWebsite] = useState(restaurant.website ?? "");
-  const [description, setDescription] = useState(restaurant.description ?? "");
-  const [rating, setRating] = useState(restaurant.rating ?? 0);
-  const [reviewText, setReviewText] = useState(restaurant.review ?? "");
-
-  const updateRestaurant = useUpdateRestaurant();
-  const updateRating = useUpdateRating();
-  const updateReview = useUpdateReview();
   const deleteRestaurant = useDeleteRestaurant();
-
-  const handleSave = () => {
-    updateRestaurant.mutate(
-      {
-        id: restaurant.id,
-        name,
-        address: address || null,
-        phone: phone || null,
-        website: website || null,
-        description: description || null,
-      },
-      {
-        onSuccess: () => {
-          if (isVisited && rating > 0) {
-            updateRating.mutate(
-              { id: restaurant.id, rating },
-              {
-                onSuccess: () => {
-                  const review = reviewText.trim() || null;
-                  updateReview.mutate(
-                    { id: restaurant.id, review },
-                    { onSuccess: () => onOpenChange(false) },
-                  );
-                },
-              },
-            );
-          } else {
-            onOpenChange(false);
-          }
-        },
-      },
-    );
-  };
 
   const handleDelete = () => {
     deleteRestaurant.mutate(String(restaurant.id), {
@@ -192,112 +141,18 @@ function EditRestaurantDialog({
     });
   };
 
-  const isPending =
-    updateRestaurant.isPending ||
-    updateRating.isPending ||
-    updateReview.isPending ||
-    deleteRestaurant.isPending;
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit {restaurant.name}</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
-          <div>
-            <label className="text-sm font-medium">Name *</label>
-            <Input
-              className="mt-1"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              maxLength={100}
-              disabled={isPending}
-            />
-          </div>
-          <div>
-            <label className="text-sm font-medium">Address</label>
-            <Input
-              className="mt-1"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              maxLength={200}
-              disabled={isPending}
-            />
-          </div>
-          <div>
-            <label className="text-sm font-medium">Phone</label>
-            <Input
-              className="mt-1"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              maxLength={20}
-              disabled={isPending}
-            />
-          </div>
-          <div>
-            <label className="text-sm font-medium">Website</label>
-            <Input
-              className="mt-1"
-              value={website}
-              onChange={(e) => setWebsite(e.target.value)}
-              maxLength={200}
-              disabled={isPending}
-            />
-          </div>
-          <div>
-            <label className="text-sm font-medium">Description</label>
-            <Textarea
-              className="mt-1"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              maxLength={500}
-              rows={3}
-              disabled={isPending}
-            />
-          </div>
-
-          {isVisited && (
-            <div className="border-t pt-4">
-              <div>
-                <label className="text-sm font-medium">Rating</label>
-                <div className="mt-1">
-                  <StarRating value={rating} onChange={setRating} size="md" />
-                </div>
-              </div>
-              <div className="mt-3">
-                <label className="text-sm font-medium">Review</label>
-                <Textarea
-                  className="mt-1"
-                  value={reviewText}
-                  onChange={(e) => setReviewText(e.target.value)}
-                  maxLength={2000}
-                  rows={4}
-                  placeholder="How was it?"
-                  disabled={isPending}
-                />
-              </div>
-            </div>
-          )}
-
-          <div className="flex gap-2 justify-between border-t pt-4">
-            <Button onClick={handleDelete} disabled={isPending}>
-              <Trash2 />
-            </Button>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={isPending}
-              >
-                Cancel
-              </Button>
-              <Button onClick={handleSave} disabled={isPending || !name.trim()}>
-                Save
-              </Button>
-            </div>
-          </div>
-        </div>
+        <RestaurantForm
+          restaurant={restaurant}
+          includeReview={isVisited}
+          onSuccess={() => onOpenChange(false)}
+          onDelete={handleDelete}
+        />
       </DialogContent>
     </Dialog>
   );
@@ -318,7 +173,7 @@ function AddRestaurantDialog({
         <DialogHeader>
           <DialogTitle>Add Restaurant</DialogTitle>
         </DialogHeader>
-        <AddRestaurantForm
+        <RestaurantForm
           onSuccess={() => onOpenChange(false)}
           includeReview={includeReview}
         />
