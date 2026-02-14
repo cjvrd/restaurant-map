@@ -118,3 +118,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Mapbox AddressAutofill appends its suggestions listbox directly to
+   document.body. Radix Dialog (modal) sets pointer-events:none on the
+   body, which blocks interaction with the listbox. Override both
+   pointer-events and z-index so suggestions stay interactive and
+   visible above the dialog overlay (z-50). */
+mapbox-search-listbox {
+  pointer-events: auto !important;
+  z-index: 9999 !important;
+}

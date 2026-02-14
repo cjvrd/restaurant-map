@@ -143,7 +143,16 @@ function EditRestaurantDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto">
+      <DialogContent
+        className="max-h-[90vh] overflow-y-auto"
+        onPointerDownOutside={(e) => {
+          if (
+            (e.target as HTMLElement)?.closest?.("mapbox-search-listbox")
+          ) {
+            e.preventDefault();
+          }
+        }}
+      >
         <DialogHeader>
           <DialogTitle>Edit {restaurant.name}</DialogTitle>
         </DialogHeader>
@@ -169,7 +178,16 @@ function AddRestaurantDialog({
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
+      <DialogContent
+        className="max-h-[90vh] overflow-y-auto sm:max-w-lg"
+        onPointerDownOutside={(e) => {
+          if (
+            (e.target as HTMLElement)?.closest?.("mapbox-search-listbox")
+          ) {
+            e.preventDefault();
+          }
+        }}
+      >
         <DialogHeader>
           <DialogTitle>Add Restaurant</DialogTitle>
         </DialogHeader>
