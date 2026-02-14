@@ -15,7 +15,12 @@ const sizeClasses = {
   lg: "size-6",
 };
 
-export function StarRating({ value, onChange, size = "md", color = "yellow" }: StarRatingProps) {
+export function StarRating({
+  value,
+  onChange,
+  size = "md",
+  color = "red",
+}: StarRatingProps) {
   const interactive = !!onChange;
   const [hovered, setHovered] = useState<number | null>(null);
 
@@ -42,9 +47,13 @@ export function StarRating({ value, onChange, size = "md", color = "yellow" }: S
               sizeClasses[size],
               "transition-colors",
               star <= (value ?? 0)
-                ? color === "red" ? "fill-red-500 text-red-500" : "fill-yellow-400 text-yellow-400"
+                ? color === "red"
+                  ? "fill-red-500 text-red-500"
+                  : "fill-yellow-400 text-yellow-400"
                 : hovered !== null && star <= hovered
-                  ? color === "red" ? "fill-red-300 text-red-300" : "fill-yellow-200 text-yellow-200"
+                  ? color === "red"
+                    ? "fill-red-300 text-red-300"
+                    : "fill-yellow-200 text-yellow-200"
                   : "fill-gray-200 text-gray-200",
             )}
           />

@@ -97,12 +97,7 @@ function AddReviewDialog({
           <div>
             <label className="text-sm font-medium text-gray-700">Rating</label>
             <div className="mt-1">
-              <StarRating
-                value={rating}
-                onChange={setRating}
-                size="md"
-                color="red"
-              />
+              <StarRating value={rating} onChange={setRating} size="md" />
             </div>
           </div>
           <div>
@@ -267,12 +262,7 @@ function EditRestaurantDialog({
               <div>
                 <label className="text-sm font-medium">Rating</label>
                 <div className="mt-1">
-                  <StarRating
-                    value={rating}
-                    onChange={setRating}
-                    size="md"
-                    color="red"
-                  />
+                  <StarRating value={rating} onChange={setRating} size="md" />
                 </div>
               </div>
               <div className="mt-3">
