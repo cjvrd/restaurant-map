@@ -128,3 +128,7 @@ mapbox-search-listbox {
   pointer-events: auto !important;
   z-index: 9999 !important;
 }
+
+.mapboxgl-popup-content {
+  border-radius: 12px !important;
+}

@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { useGetAllRestaurants, type Restaurant } from "~/api/queries";
-import { useDeleteRestaurant, useUpdateRating, useUpdateReview } from "~/api/mutations";
+import {
+  useDeleteRestaurant,
+  useUpdateRating,
+  useUpdateReview,
+} from "~/api/mutations";
 import { StarRating } from "~/components/ui/star-rating";
 import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
@@ -13,37 +17,14 @@ import {
 import {
   ChevronDown,
   ChevronUp,
+  Globe,
   MapPin,
   Pencil,
+  Phone,
   Plus,
-  Star,
   UtensilsCrossed,
 } from "lucide-react";
 import { RestaurantForm } from "~/routes/add-restaurant";
-
-function RedStars({
-  rating,
-  size = "sm",
-}: {
-  rating: number;
-  size?: "sm" | "md";
-}) {
-  const iconSize = size === "md" ? "size-5" : "size-4";
-  return (
-    <div className="flex gap-0.5">
-      {[1, 2, 3, 4, 5].map((i) => (
-        <Star
-          key={i}
-          className={`${iconSize} ${
-            i <= rating
-              ? "fill-red-500 text-red-500"
-              : "fill-none text-gray-300"
-          }`}
-        />
-      ))}
-    </div>
-  );
-}
 
 function AddReviewDialog({
   restaurant,
@@ -146,9 +127,7 @@ function EditRestaurantDialog({
       <DialogContent
         className="max-h-[90vh] overflow-y-auto"
         onPointerDownOutside={(e) => {
-          if (
-            (e.target as HTMLElement)?.closest?.("mapbox-search-listbox")
-          ) {
+          if ((e.target as HTMLElement)?.closest?.("mapbox-search-listbox")) {
             e.preventDefault();
           }
         }}
@@ -181,9 +160,7 @@ function AddRestaurantDialog({
       <DialogContent
         className="max-h-[90vh] overflow-y-auto sm:max-w-lg"
         onPointerDownOutside={(e) => {
-          if (
-            (e.target as HTMLElement)?.closest?.("mapbox-search-listbox")
-          ) {
+          if ((e.target as HTMLElement)?.closest?.("mapbox-search-listbox")) {
             e.preventDefault();
           }
         }}
@@ -220,7 +197,14 @@ function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
           {restaurant.address ? (
             <>
               <MapPin className="size-3.5 shrink-0" />
-              <span className="truncate">{restaurant.address}</span>
+              <a
+                href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(restaurant.address)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="truncate hover:underline"
+              >
+                {restaurant.address}
+              </a>
             </>
           ) : (
             <>
@@ -229,11 +213,31 @@ function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
             </>
           )}
         </div>
+        <div className="flex items-center gap-1 text-sm text-gray-500 mt-0.5 min-h-5">
+          <Phone className="size-3.5 shrink-0" />
+          {restaurant.phone ? (
+            <a href={`tel:${restaurant.phone}`} className="truncate hover:underline">
+              {restaurant.phone}
+            </a>
+          ) : (
+            <span>No Phone</span>
+          )}
+        </div>
+        <div className="flex items-center gap-1 text-sm text-gray-500 mt-0.5 min-h-5">
+          <Globe className="size-3.5 shrink-0" />
+          {restaurant.website ? (
+            <a href={restaurant.website.match(/^https?:\/\//) ? restaurant.website : `https://${restaurant.website}`} target="_blank" rel="noopener noreferrer" className="truncate hover:underline">
+              {restaurant.website}
+            </a>
+          ) : (
+            <span>No Website</span>
+          )}
+        </div>
 
         {isVisited && (
           <div className="border-t pt-3 mt-3">
             <div className="flex items-center justify-between min-h-8">
-              <RedStars rating={restaurant.rating ?? 0} size="md" />
+              <StarRating value={restaurant.rating ?? 0} size="md" />
               {restaurant.review && (
                 <button
                   className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -302,8 +306,8 @@ export default function RestaurantsList() {
   const [addWantToVisitOpen, setAddWantToVisitOpen] = useState(false);
   const [addVisitedOpen, setAddVisitedOpen] = useState(false);
 
-  const wantToVisit = restaurants?.filter((r) => !r.review) ?? [];
-  const visited = restaurants?.filter((r) => r.review) ?? [];
+  const wantToVisit = restaurants?.filter((r) => !r.review && !r.rating) ?? [];
+  const visited = restaurants?.filter((r) => r.review || r.rating) ?? [];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
