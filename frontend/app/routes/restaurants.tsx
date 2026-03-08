@@ -24,7 +24,7 @@ import {
   Plus,
   UtensilsCrossed,
 } from "lucide-react";
-import { RestaurantForm } from "~/routes/add-restaurant";
+import { RestaurantForm } from "~/components/add-edit-restaurant-form";
 
 function AddReviewDialog({
   restaurant,
@@ -216,7 +216,10 @@ function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
         <div className="flex items-center gap-1 text-sm text-gray-500 mt-0.5 min-h-5">
           <Phone className="size-3.5 shrink-0" />
           {restaurant.phone ? (
-            <a href={`tel:${restaurant.phone}`} className="truncate hover:underline">
+            <a
+              href={`tel:${restaurant.phone}`}
+              className="truncate hover:underline"
+            >
               {restaurant.phone}
             </a>
           ) : (
@@ -226,7 +229,16 @@ function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
         <div className="flex items-center gap-1 text-sm text-gray-500 mt-0.5 min-h-5">
           <Globe className="size-3.5 shrink-0" />
           {restaurant.website ? (
-            <a href={restaurant.website.match(/^https?:\/\//) ? restaurant.website : `https://${restaurant.website}`} target="_blank" rel="noopener noreferrer" className="truncate hover:underline">
+            <a
+              href={
+                restaurant.website.match(/^https?:\/\//)
+                  ? restaurant.website
+                  : `https://${restaurant.website}`
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+              className="truncate hover:underline"
+            >
               {restaurant.website}
             </a>
           ) : (
