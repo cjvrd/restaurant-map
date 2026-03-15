@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "tsx watch ./server.ts",
+    "seed": "tsx seed.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

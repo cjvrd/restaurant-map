@@ -22,6 +22,11 @@ model Restaurant {
     description  String?
     rating       Int? // 1-5 stars
     review       String?
+    google_place_id  String?  @unique
+    price_level      String?
+    types            Json?
+    google_rating    Float?
+    google_rating_count Int?
 }
 
 enum status {

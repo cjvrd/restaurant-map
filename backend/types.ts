@@ -23,6 +23,11 @@ export type Restaurant = {
     description: string | null;
     rating: number | null;
     review: string | null;
+    google_place_id: string | null;
+    price_level: string | null;
+    types: unknown | null;
+    google_rating: number | null;
+    google_rating_count: number | null;
 };
 export type DB = {
     Restaurant: Restaurant;
