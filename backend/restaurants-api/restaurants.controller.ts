@@ -14,6 +14,7 @@ const zRestaurantReq = z.object({
   phone: z.string().nullable(), //TODO: add phone validation
   website: z.string().nullable(), //TODO: add website validation
   description: z.string().max(1000).nullable(),
+  visit: z.enum(["VISIT", "VISITED"]).nullable(),
 });
 
 export type RestaurantReq = z.infer<typeof zRestaurantReq>;

@@ -14,6 +14,7 @@ export type Restaurant = {
   description: string | null;
   rating: number | null;
   review: string | null;
+  visit: "VISIT" | "VISITED" | null;
 };
 
 const RestaurantQueries = {

@@ -36,6 +36,7 @@ type FormValues = {
 type RestaurantFormProps = {
   restaurant?: Restaurant;
   includeReview?: boolean;
+  visit?: "VISIT" | "VISITED";
   onSuccess?: () => void;
   onDelete?: () => void;
 };
@@ -43,6 +44,7 @@ type RestaurantFormProps = {
 export function RestaurantForm({
   restaurant,
   includeReview,
+  visit,
   onSuccess,
   onDelete,
 }: RestaurantFormProps) {
@@ -121,6 +123,7 @@ export function RestaurantForm({
           description: values.description ?? null,
           rating: includeReview && rating > 0 ? rating : null,
           review: includeReview && reviewText.trim() ? reviewText.trim() : null,
+          visit: visit ?? null,
         },
         {
           onSuccess: () => {

@@ -22,6 +22,7 @@ model Restaurant {
     description  String?
     rating       Int? // 1-5 stars
     review       String?
+    visit        visit_status?
     google_place_id  String?  @unique
     price_level      String?
     types            Json?
@@ -33,4 +34,9 @@ enum status {
     ENABLED
     DISABLED
     DELETED
+}
+
+enum visit_status {
+    VISIT
+    VISITED
 }

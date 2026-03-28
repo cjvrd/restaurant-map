@@ -9,7 +9,7 @@ type NewRestaurant = Omit<
 >;
 
 type RestaurantUpdate = Partial<
-  Pick<Restaurant, "name" | "address" | "coordinates" | "phone" | "website" | "description">
+  Pick<Restaurant, "name" | "address" | "coordinates" | "phone" | "website" | "description" | "visit">
 >;
 
 const RestaurantMutations = {

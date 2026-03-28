@@ -10,6 +10,11 @@ export const status = {
     DELETED: "DELETED"
 } as const;
 export type status = (typeof status)[keyof typeof status];
+export const visit_status = {
+    VISIT: "VISIT",
+    VISITED: "VISITED"
+} as const;
+export type visit_status = (typeof visit_status)[keyof typeof visit_status];
 export type Restaurant = {
     id: Generated<number>;
     created_time: Generated<Timestamp>;
@@ -23,6 +28,7 @@ export type Restaurant = {
     description: string | null;
     rating: number | null;
     review: string | null;
+    visit: visit_status | null;
     google_place_id: string | null;
     price_level: string | null;
     types: unknown | null;

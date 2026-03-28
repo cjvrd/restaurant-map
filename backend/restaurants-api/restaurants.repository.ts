@@ -19,6 +19,7 @@ export const RestaurantsRepository = {
         phone: restaurant.phone,
         website: restaurant.website,
         description: restaurant.description,
+        visit: restaurant.visit,
         updated_time: new Date(),
       })
       .returningAll()
@@ -35,7 +36,7 @@ export const RestaurantsRepository = {
   updateRestaurantRating: async (id: number, rating: number) =>
     db
       .updateTable("Restaurant")
-      .set({ rating, updated_time: new Date() })
+      .set({ rating, visit: "VISITED", updated_time: new Date() })
       .where("id", "=", id)
       .where("status", "=", "ENABLED")
       .returningAll()
@@ -44,7 +45,7 @@ export const RestaurantsRepository = {
   updateRestaurantReview: async (id: number, review: string | null) =>
     db
       .updateTable("Restaurant")
-      .set({ review, updated_time: new Date() })
+      .set({ review, visit: "VISITED", updated_time: new Date() })
       .where("id", "=", id)
       .where("status", "=", "ENABLED")
       .returningAll()

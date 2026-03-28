@@ -150,10 +150,12 @@ function AddRestaurantDialog({
   open,
   onOpenChange,
   includeReview,
+  visit,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   includeReview?: boolean;
+  visit: "VISIT" | "VISITED";
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -171,6 +173,7 @@ function AddRestaurantDialog({
         <RestaurantForm
           onSuccess={() => onOpenChange(false)}
           includeReview={includeReview}
+          visit={visit}
         />
       </DialogContent>
     </Dialog>
@@ -181,7 +184,7 @@ function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
   const [addReviewOpen, setAddReviewOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
-  const isVisited = !!restaurant.review;
+  const isVisited = restaurant.visit === "VISITED";
 
   return (
     <div className="rounded-xl border bg-white hover:shadow-lg transition-shadow overflow-hidden relative">
@@ -318,8 +321,8 @@ export default function RestaurantsList() {
   const [addWantToVisitOpen, setAddWantToVisitOpen] = useState(false);
   const [addVisitedOpen, setAddVisitedOpen] = useState(false);
 
-  const wantToVisit = restaurants?.filter((r) => !r.review && !r.rating) ?? [];
-  const visited = restaurants?.filter((r) => r.review || r.rating) ?? [];
+  const wantToVisit = restaurants?.filter((r) => r.visit === "VISIT") ?? [];
+  const visited = restaurants?.filter((r) => r.visit === "VISITED") ?? [];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -378,11 +381,13 @@ export default function RestaurantsList() {
       <AddRestaurantDialog
         open={addWantToVisitOpen}
         onOpenChange={setAddWantToVisitOpen}
+        visit="VISIT"
       />
       <AddRestaurantDialog
         open={addVisitedOpen}
         onOpenChange={setAddVisitedOpen}
         includeReview
+        visit="VISITED"
       />
     </div>
   );
